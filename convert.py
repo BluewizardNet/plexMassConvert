@@ -12,7 +12,7 @@ import shutil
 
 fileExtension=".ts"
 newFileExtension=".mkv"
-tmpFileDir="~/tmp"
+tmpFileDir="/tmp/plexMassConvert/"
 comcutLocation="/usr/local/bin/comcut"
 handBrakeCli="~/bin/HandBrakeCLI"
 handBrakeOptions="-e x264 -f av_mkv -E av_aac -R auto -6 stero -B 160 --audio-fallback ac3 --encoder-preset faster -q 23 -2 --encoder-level=\"3.1\" --vfr --decomb bob -i "
