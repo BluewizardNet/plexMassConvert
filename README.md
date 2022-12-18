@@ -6,8 +6,19 @@ Must ensure the convert.py script first line is where your python3 exists at
 
 ## Dependencies
 
-comskip
-comcut
+### comskip
+
+This is part of the following github repo:
+
+[https://github.com/erikkaashoek/Comskip]
+
+### comcut 
+
+This is part of the following github repo:
+
+[https://github.com/BrettSheleski/comchap]
+
+### comskip.ini
 
 comskip.ini needs to be copied to the user running the command home directory.
 

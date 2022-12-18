@@ -1,9 +1,11 @@
-#!/opt/homebrew/bin/python3
 #!/usr/bin/python3
+#!/opt/homebrew/bin/python3
+
 ###############################################################################
 # Convert mass amount of files from within plex from ts to mkv
 #
 ###############################################################################
+
 
 import sys
 import os
@@ -14,7 +16,7 @@ fileExtension=".ts"
 newFileExtension=".mkv"
 tmpFileDir="/tmp/plexMassConvert/"
 comcutLocation="/usr/local/bin/comcut"
-handBrakeCli="~/bin/HandBrakeCLI"
+handBrakeCli="/usr/bin/HandBrakeCLI"
 handBrakeOptions="-e x264 -f av_mkv -E av_aac -R auto -6 stero -B 160 --audio-fallback ac3 --encoder-preset faster -q 23 -2 --encoder-level=\"3.1\" --vfr --decomb bob -i "
 
 def findItems(imagePath, rootDirectory, destinationRootDirectory):
@@ -26,7 +28,6 @@ def findItems(imagePath, rootDirectory, destinationRootDirectory):
                  if entry.name.endswith(fileExtension):
                     print("Entry: ", entry.name)
                     subDirectory = imagePath.split(rootDirectory)
-
                     sourcePath = rootDirectory + "/" + subDirectory[1] + "/" + entry.name
                     fullPathDIR = tmpFileDir + "/" + subDirectory[1] 
                     fullPathTMP = tmpFileDir + "/" + subDirectory[1] + "/" + entry.name
@@ -42,13 +43,16 @@ def findItems(imagePath, rootDirectory, destinationRootDirectory):
 
                     destinationFileName = entry.name.replace(fileExtension, newFileExtension)
                     destinationFullPath = destinationRootDirectory + "/" + subDirectory[1] + "/" + destinationFileName
+                    tmpDestinationFullPath = fullPathDIR + "/" + destinationFileName
 
-                    commandHandbrakeCLI = handBrakeCli + " " + handBrakeOptions + "\"" + fullPathTMP + "\" -o \"" +  destinationFullPath + "\""
+                    commandHandbrakeCLI = handBrakeCli + " " + handBrakeOptions + "\"" + fullPathTMP + "\" -o \"" +  tmpDestinationFullPath + "\""
                     print("HandbrakeCLI: ", commandHandbrakeCLI)
                    
                     os.system(commandHandbrakeCLI)
                     print("Finished Encoding")
 
+                    print("tmpDestinationFullPath: " + tmpDestinationFullPath)
+                    shutil.move(tmpDestinationFullPath, destinationFullPath)
                     Path(fullPathTMP).unlink()
                    
              else:
