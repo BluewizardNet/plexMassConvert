@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 #!/opt/homebrew/bin/python3
 
+
 ###############################################################################
 # Convert mass amount of files from within plex from ts to mkv
 #
@@ -14,9 +15,10 @@ import shutil
 
 fileExtension=".ts"
 newFileExtension=".mkv"
-tmpFileDir="/tmp/plexMassConvert/"
+tmpFileDir="/tmp/plexMassConvert"
 comcutLocation="/usr/local/bin/comcut"
 handBrakeCli="/usr/bin/HandBrakeCLI"
+#handBrakeCli="~/bin/HandBrakeCLI"
 handBrakeOptions="-e x264 -f av_mkv -E av_aac -R auto -6 stero -B 160 --audio-fallback ac3 --encoder-preset faster -q 23 -2 --encoder-level=\"3.1\" --vfr --decomb bob -i "
 
 def findItems(imagePath, rootDirectory, destinationRootDirectory):
@@ -27,10 +29,14 @@ def findItems(imagePath, rootDirectory, destinationRootDirectory):
              if os.path.isfile(os.path.join(imagePath, entry)):
                  if entry.name.endswith(fileExtension):
                     print("Entry: ", entry.name)
-                    subDirectory = imagePath.split(rootDirectory)
-                    sourcePath = rootDirectory + "/" + subDirectory[1] + "/" + entry.name
-                    fullPathDIR = tmpFileDir + "/" + subDirectory[1] 
-                    fullPathTMP = tmpFileDir + "/" + subDirectory[1] + "/" + entry.name
+                    subDirectorySplit = imagePath.split(rootDirectory)
+                    # subDirectory has the leading /
+                    subDirectory = subDirectorySplit[1]
+                    print("\n\n\n***SubDirectory: " + subDirectory)
+
+                    sourcePath = rootDirectory + subDirectory + "/" + entry.name
+                    fullPathDIR = tmpFileDir + subDirectory 
+                    fullPathTMP = tmpFileDir + subDirectory + "/" + entry.name
                    
                     Path(fullPathDIR).mkdir (0o755, True, True)
                      
@@ -42,7 +48,7 @@ def findItems(imagePath, rootDirectory, destinationRootDirectory):
                     print("Starting Encoding")
 
                     destinationFileName = entry.name.replace(fileExtension, newFileExtension)
-                    destinationFullPath = destinationRootDirectory + "/" + subDirectory[1] + "/" + destinationFileName
+                    destinationFullPath = destinationRootDirectory + subDirectory + "/" + destinationFileName
                     tmpDestinationFullPath = fullPathDIR + "/" + destinationFileName
 
                     commandHandbrakeCLI = handBrakeCli + " " + handBrakeOptions + "\"" + fullPathTMP + "\" -o \"" +  tmpDestinationFullPath + "\""
@@ -52,15 +58,18 @@ def findItems(imagePath, rootDirectory, destinationRootDirectory):
                     print("Finished Encoding")
 
                     print("tmpDestinationFullPath: " + tmpDestinationFullPath)
+                    print("dstinationFullPath: " + destinationFullPath)
                     shutil.move(tmpDestinationFullPath, destinationFullPath)
                     Path(fullPathTMP).unlink()
                    
              else:
                  if entry.is_dir:
                     print("DIR: ", entry.name)
-                    subDirectory = imagePath.split(rootDirectory)
+                    subDirectorySplit = imagePath.split(rootDirectory)
+                    #subDirectory has the leading /
+                    subDirectory = subDirectorySplit[1]
 
-                    fullPath = destinationRootDirectory + "/" + subDirectory[1] + "/" + entry.name
+                    fullPath = destinationRootDirectory + subDirectory + "/" + entry.name
                     Path(fullPath).mkdir (0o755, True, True)
                     findItems(os.path.join(imagePath, entry), rootDirectory, destinationRootDirectory)
 
