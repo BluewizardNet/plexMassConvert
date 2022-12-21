@@ -12,6 +12,7 @@ import sys
 import os
 from pathlib import Path
 import shutil
+import re
 
 fileExtension=".ts"
 newFileExtension=".mkv"
@@ -52,6 +53,7 @@ def findItems(imagePath, rootDirectory, destinationRootDirectory):
                     tmpDestinationFullPath = fullPathDIR + "/" + destinationFileName
 
                     commandHandbrakeCLI = handBrakeCli + " " + handBrakeOptions + "\"" + fullPathTMP + "\" -o \"" +  tmpDestinationFullPath + "\""
+                    commandHandbrakeCLI = re.sub(r'([\`])', r'\\\1', commandHandbrakeCLI)
                     print("HandbrakeCLI: ", commandHandbrakeCLI)
                    
                     os.system(commandHandbrakeCLI)
